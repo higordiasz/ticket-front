@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import API from "../../api";
 import "../../styles/login.css";
 
 const LoginForm = () => {
@@ -16,28 +17,11 @@ const LoginForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    try {
-      const response = await fetch("http://localhost:3333/login", {
-        mode: "no-cors",
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: username,
-          password: password,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error("Credenciais inválidas. Por favor, tente novamente.");
-      }
-
-      // Autenticação bem-sucedida
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      setError(error.message);
+    let login = await API.Login.Controller.tryLogin(username, password);
+    if (login.error) {
+      setError(login.message);
+    } else {
+      console.log(login);
     }
   };
 
