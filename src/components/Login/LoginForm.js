@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import API from "../../api";
+import { useNavigate } from "react-router-dom";
 import "../../styles/login.css";
 
 const LoginForm = () => {
   const [username, setusername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleUsernameChange = (event) => {
     setusername(event.target.value);
@@ -21,18 +23,13 @@ const LoginForm = () => {
     if (login.error) {
       setError(login.message);
     } else {
-      console.log(login);
+      localStorage.setItem("token", login.token);
+      navigate("/home");
     }
   };
 
   return (
     <div className="login-container">
-      <meta charSet="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
-      />
       <form className="form" autoComplete="off" onSubmit={handleSubmit}>
         <p id="heading">Login</p>
         <div>{error && <p className="error-message">{error}</p>}</div>
