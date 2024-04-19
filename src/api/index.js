@@ -1,11 +1,9 @@
-import LoginController from "./Login/Controller";
+import Controllers from "./Controllers";
 import Endpoints from "./Endpoints";
 
 const API = {};
 
-API.Login = {
-  Controller: LoginController,
-};
+API.Controllers = Controllers;
 API.Endpoints = Endpoints;
 
 export default API;

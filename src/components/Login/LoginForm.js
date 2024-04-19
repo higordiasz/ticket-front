@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import API from "../../api";
 import { useNavigate } from "react-router-dom";
 import "../../styles/login.css";
@@ -8,6 +8,23 @@ const LoginForm = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const checkToken = async (storedToken) => {
+    let valid = await API.Controllers.Login.checkLogin(storedToken);
+    if (valid.valid) return navigate("/home");
+    return;
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      checkToken(token);
+    }
+  });
+
+  const sleep = (milliseconds) => {
+    return new Promise((resolve) => setTimeout(resolve, milliseconds));
+  };
 
   const handleUsernameChange = (event) => {
     setusername(event.target.value);
@@ -19,11 +36,12 @@ const LoginForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    let login = await API.Login.Controller.tryLogin(username, password);
+    let login = await API.Controllers.Login.tryLogin(username, password);
     if (login.error) {
       setError(login.message);
     } else {
       localStorage.setItem("token", login.token);
+      await sleep(300);
       navigate("/home");
     }
   };

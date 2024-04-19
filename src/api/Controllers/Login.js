@@ -1,23 +1,22 @@
 import Endpoints from "../Endpoints";
+import md5 from "md5";
 
 const LoginController = {};
 
 LoginController.tryLogin = async (username, password) => {
   try {
-    const response = await fetch(Endpoints.Login.Login.URL, {
-      method: Endpoints.Login.Login.Method,
-      headers: Endpoints.Login.Login.Headers,
-      body: JSON.stringify({
-        username: username,
-        password: password,
-      }),
+    const endpoint = Endpoints.Login.Login(username, md5(password));
+    const response = await fetch(endpoint.URL, {
+      method: endpoint.Method,
+      headers: endpoint.Headers,
+      body: JSON.stringify(endpoint.Body),
     });
     console.log(response.status);
     if (!response.ok)
       throw new Error("Credenciais inválidas. Por favor, tente novamente.");
     // Autenticação bem-sucedida
     const data = await response.json();
-    return { error: data.error, message: data.message, token: data.token };
+    return { error: data.error, message: data.message, token: data.data.token };
   } catch (error) {
     return { error: true, message: error.message, token: "" };
   }
@@ -25,12 +24,11 @@ LoginController.tryLogin = async (username, password) => {
 
 LoginController.checkLogin = async (token) => {
   try {
-    const response = await fetch(Endpoints.Login.CheckToken.URL, {
-      method: Endpoints.Login.CheckToken.Method,
-      headers: Endpoints.Login.CheckToken.Headers,
-      body: JSON.stringify({
-        token: token,
-      }),
+    const endpoint = Endpoints.Login.CheckToken(token);
+    const response = await fetch(endpoint.URL, {
+      method: endpoint.Method,
+      headers: endpoint.Headers,
+      body: JSON.stringify(endpoint.Body),
     });
     if (!response.ok)
       throw new Error("Token invalido. Por favor faça login novamente.");

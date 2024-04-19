@@ -1,150 +1,78 @@
 import React, { useEffect, useState } from "react";
+import Ticket from "./Ticket";
 import API from "../../api";
 import { useNavigate } from "react-router-dom";
 import "../../styles/home.css";
 
 const Home = () => {
   const [token, setToken] = useState("");
+  const [tickets, setTickets] = useState({
+    new: [],
+    urgent: [],
+    old: [],
+    closed: [],
+  });
   const navigate = useNavigate();
+  const checkToken = async (storedToken) => {
+    let valid = await API.Controllers.Login.checkLogin(storedToken);
+    if (!valid.valid) return navigate("/");
+    setToken(storedToken);
+    return;
+  };
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
-    setToken(storedToken);
+    /*const fetchData = async () => {
+      await checkToken(storedToken);
+    };
+    fetchData();*/
+    console.log("rodando");
+    return;
   }, []);
 
-  const checkToken = async () => {
-    let valid = await API.Login.Controller.checkLogin(token);
-    if (!valid.valid) navigate("/");
-  };
-  /*
-  const criarChamado = (titulo, descricao, dataCriacao, tipo) => {
-    return `<div class="card">
-                  <div class="card-body">
-                      <h5 class="card-title">${titulo}</h5>
-                      <p class="card-text card-description">${descricao}</p>
-                      <p class="card-text card-date">Data de Criação: ${dataCriacao}</p>
-                      <div class="float-right">
-                          <button class="btn btn-sm btn-danger mr-1" onclick="excluirChamado()"><span class="material-symbols-outlined">delete</span></button>
-                          <button class="btn btn-sm btn-success mr-1" onclick="concluirChamado()"><span class="material-symbols-outlined">done</span></button>
-                          <button class="btn btn-sm btn-info" onclick="responderChamado()"><span class="material-symbols-outlined">reply</span></button>
-                      </div>
-                  </div>
-              </div>`;
+  const addTicket = (ticketID, ownerID, title, description, created, type) => {
+    const newTicket = {
+      ticketID: ticketID,
+      ownerID: ownerID,
+      title: title,
+      description: description,
+      created: created,
+      type: type,
+    };
+    const newTickets = { ...tickets };
+    newTickets[type] = [...newTickets[type], newTicket];
+    setTickets(newTickets);
   };
 
-  const adicionarChamado = (titulo, descricao, dataCriacao, tipo) => {
-    const chamadoHTML = criarChamado(titulo, descricao, dataCriacao, tipo);
-    let coluna;
-    switch (tipo) {
-      case "resolvidos":
-        coluna = document.getElementById("resolvidos");
-        break;
-      case "urgentes":
-        coluna = document.getElementById("urgentes");
-        break;
-      case "novos":
-        coluna = document.getElementById("novos");
-        break;
-      case "aguardando":
-        coluna = document.getElementById("aguardando");
-        break;
-      default:
-        return; // Retorna se o tipo não for reconhecido
-    }
-    coluna.insertAdjacentHTML("beforeend", chamadoHTML);
-  };
-
-  const excluirChamado = () => {
-    console.log("Chamado excluído!");
-  };
-
-  const concluirChamado = () => {
-    console.log("Chamado concluído!");
-  };
-
-  const responderChamado = () => {
-    console.log("Chamado respondido!");
-  };
-
-  adicionarChamado(
-    "Chamado 1",
-    "Descrição breve do chamado 1.",
-    "17/04/2024",
-    "resolvidos"
-  );
-  adicionarChamado(
-    "Chamado 2",
-    "Descrição breve do chamado 2.",
-    "17/04/2024",
-    "urgentes"
-  );
-  adicionarChamado(
-    "Chamado 3",
-    "Descrição breve do chamado 3.",
-    "17/04/2024",
-    "novos"
-  );
-  adicionarChamado(
-    "Chamado 4",
-    "Descrição breve do chamado 4.",
-    "17/04/2024",
-    "aguardando"
-  );
-*/
   return (
-    <div>
+    <div className="homeContainer">
       <div className="container">
         <div className="row">
-          <div className="col-lg-6">
-            <div className="column">
-              <h2>
-                <span className="material-symbols-outlined">done_outline</span>{" "}
-                Resolvidos
-              </h2>
-              <div id="resolvidos" className="card card-container">
-                {/* Adicionar os chamados aqui */}
+          {Object.entries(tickets).map(([type, ticketsList]) => (
+            <div className="col-lg-6">
+              <div className="column">
+                <h2>
+                  {type == "new"
+                    ? "Novos"
+                    : type == "old"
+                    ? "Antigos"
+                    : type == "urgent"
+                    ? "Urgentes"
+                    : "Fechados"}
+                </h2>
+                <div id={type} className="card card-container">
+                  {ticketsList.map((ticket, index) => (
+                    <Ticket
+                      key={index}
+                      title={ticket.title}
+                      created={ticket.created}
+                      description={ticket.description}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-          <div className="col-lg-6">
-            <div className="column">
-              <h2>
-                <span className="material-symbols-outlined">warning</span>{" "}
-                Urgentes
-              </h2>
-              <div id="urgentes" className="card card-container">
-                {/* Adicionar os chamados aqui */}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-6">
-            <div className="column">
-              <h2>
-                <span className="material-symbols-outlined">
-                  add_circle_outline
-                </span>{" "}
-                Novos
-              </h2>
-              <div id="novos" className="card card-container">
-                {/* Adicionar os chamados aqui */}
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-6">
-            <div className="column">
-              <h2>
-                <span className="material-symbols-outlined">
-                  hourglass_empty
-                </span>{" "}
-                Aguardando Resposta
-              </h2>
-              <div id="aguardando" className="card card-container">
-                {/* Adicionar os chamados aqui */}
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
       <button
