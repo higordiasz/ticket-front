@@ -25,9 +25,10 @@ TicketController.getAllTickets = async (status, type, token) => {
       headers: endpoint.Headers,
     });
     if (!response.ok) throw new Error("Não foi possivel localizar os tickets.");
-    const data = await response.json();
+    const data = (await response.json()) || {};
     return { error: false, data: data.data, message: data.message };
   } catch (err) {
+    console.log(err);
     return { error: true, data: {}, message: err.message };
   }
 };

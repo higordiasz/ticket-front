@@ -12,23 +12,12 @@ const Home = () => {
     old: [],
     closed: [],
   });
+  var firstTime = true;
   const navigate = useNavigate();
-  const checkToken = async (storedToken) => {
-    let valid = await API.Controllers.Login.checkLogin(storedToken);
-    if (!valid.valid) return navigate("/");
-    setToken(storedToken);
-    return;
-  };
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    /*const fetchData = async () => {
-      await checkToken(storedToken);
-    };
-    fetchData();*/
-    console.log("rodando");
-    return;
-  }, []);
+  const sleep = (milliseconds) => {
+    return new Promise((resolve) => setTimeout(resolve, milliseconds));
+  };
 
   const addTicket = (ticketID, ownerID, title, description, created, type) => {
     const newTicket = {
@@ -40,33 +29,111 @@ const Home = () => {
       type: type,
     };
     const newTickets = { ...tickets };
-    newTickets[type] = [...newTickets[type], newTicket];
+    newTickets[type].push(newTicket);
     setTickets(newTickets);
   };
 
+  const loadAllTickets = async (tk) => {
+    if (tk !== "") {
+      const ts = await API.Controllers.Ticket.getAllTickets("all", "all", tk);
+      const data = ts.data.tickets;
+      const news = data.New;
+      const old = data.Old;
+      const urgent = data.Urgent;
+      const closed = data.Closed;
+      console.table(news);
+      console.table(old);
+      console.table(urgent);
+      console.table(closed);
+      for (let i = 0; i < news.length; i++) {
+        addTicket(
+          news[i].ticketID,
+          news[i].ownerID,
+          news[i].title,
+          news[i].description,
+          news[i].created,
+          "new"
+        );
+      }
+      for (let i = 0; i < old.length; i++) {
+        addTicket(
+          old[i].ticketID,
+          old[i].ownerID,
+          old[i].title,
+          old[i].description,
+          old[i].created,
+          "old"
+        );
+      }
+      for (let i = 0; i < urgent.length; i++) {
+        addTicket(
+          urgent[i].ticketID,
+          urgent[i].ownerID,
+          urgent[i].title,
+          urgent[i].description,
+          urgent[i].created,
+          "urgent"
+        );
+      }
+      for (let i = 0; i < closed.length; i++) {
+        addTicket(
+          closed[i].ticketID,
+          closed[i].ownerID,
+          closed[i].title,
+          closed[i].description,
+          closed[i].created,
+          "closed"
+        );
+      }
+    }
+  };
+
+  const checkToken = async (storedToken) => {
+    let valid = await API.Controllers.Login.checkLogin(storedToken);
+    if (!valid.valid) return navigate("/");
+    await sleep(100);
+    await loadAllTickets(storedToken);
+    return;
+  };
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    const fetchData = async () => {
+      await checkToken(storedToken);
+    };
+    setToken(storedToken);
+    if (firstTime) {
+      firstTime = false;
+      fetchData();
+    }
+    return;
+  }, []);
+
   return (
     <div className="homeContainer">
-      <div className="container">
+      <div id="div-container" className="container">
         <div className="row">
           {Object.entries(tickets).map(([type, ticketsList]) => (
-            <div className="col-lg-6">
+            <div key={type} className="col-lg-6">
               <div className="column">
                 <h2>
-                  {type == "new"
+                  {type === "new"
                     ? "Novos"
-                    : type == "old"
+                    : type === "old"
                     ? "Antigos"
-                    : type == "urgent"
+                    : type === "urgent"
                     ? "Urgentes"
                     : "Fechados"}
                 </h2>
                 <div id={type} className="card card-container">
                   {ticketsList.map((ticket, index) => (
                     <Ticket
-                      key={index}
+                      key={String(ticket.ticketID)}
                       title={ticket.title}
                       created={ticket.created}
                       description={ticket.description}
+                      ownerID={ticket.ownerID}
+                      ticketID={ticket.ticketID}
                     />
                   ))}
                 </div>
@@ -85,7 +152,7 @@ const Home = () => {
       <div
         className="modal fade"
         id="novoTicketModal"
-        tabindex="-1"
+        tabIndex="-1"
         role="dialog"
         aria-labelledby="novoTicketModalLabel"
         aria-hidden="true"
@@ -108,7 +175,7 @@ const Home = () => {
             <div className="modal-body">
               <form id="formNovoTicket">
                 <div className="form-group">
-                  <label for="titulo">Título:</label>
+                  <label htmlFor="titulo">Título:</label>
                   <input
                     type="text"
                     className="form-control"
@@ -117,7 +184,7 @@ const Home = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label for="descricao">Descrição:</label>
+                  <label htmlFor="descricao">Descrição:</label>
                   <textarea
                     className="form-control"
                     id="descricao"
