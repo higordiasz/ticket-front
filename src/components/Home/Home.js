@@ -3,35 +3,161 @@ import Ticket from "./Ticket";
 import API from "../../api";
 import { useNavigate } from "react-router-dom";
 import "../../styles/home.css";
+import NotificationModal from "./NotificationModal";
+import CreateTicketModal from "./CreateTicket";
 
 const Home = () => {
-  const [token, setToken] = useState("");
+  // Use States
   const [tickets, setTickets] = useState({
     new: [],
     urgent: [],
     old: [],
     closed: [],
   });
+
+  const [showNotifications, setShownotifications] = useState(false);
+
+  const [showCreate, setShowCreate] = useState(false);
+
+  const [notifications, setNotifications] = useState([
+    {
+      title: "Nova Mensagem",
+      message: "Tem uma nova mensagem em seu chamado.",
+      date: "23/04/2024",
+      id: "1",
+    },
+    {
+      title: "Nova Mensagem",
+      message: "Tem uma nova mensagem em seu chamado.",
+      date: "23/04/2024",
+      id: "2",
+    },
+    {
+      title: "Nova Mensagem",
+      message: "Tem uma nova mensagem em seu chamado.",
+      date: "23/04/2024",
+      id: "3",
+    },
+    {
+      title: "Nova Mensagem",
+      message: "Tem uma nova mensagem em seu chamado.",
+      date: "23/04/2024",
+      id: "4",
+    },
+    {
+      title: "Nova Mensagem",
+      message: "Tem uma nova mensagem em seu chamado.",
+      date: "23/04/2024",
+      id: "5",
+    },
+    {
+      title: "Nova Mensagem",
+      message: "Tem uma nova mensagem em seu chamado.",
+      date: "23/04/2024",
+      id: "6",
+    },
+    {
+      title: "Nova Mensagem",
+      message: "Tem uma nova mensagem em seu chamado.",
+      date: "23/04/2024",
+      id: "7",
+    },
+    {
+      title: "Nova Mensagem",
+      message: "Tem uma nova mensagem em seu chamado.",
+      date: "23/04/2024",
+      id: "8",
+    },
+    {
+      title: "Nova Mensagem",
+      message: "Tem uma nova mensagem em seu chamado.",
+      date: "23/04/2024",
+      id: "9",
+    },
+    {
+      title: "Nova Mensagem",
+      message: "Tem uma nova mensagem em seu chamado.",
+      date: "23/04/2024",
+      id: "10",
+    },
+  ]);
+  // Variables
   var firstTime = true;
   const navigate = useNavigate();
 
+  // Functions
   const sleep = (milliseconds) => {
     return new Promise((resolve) => setTimeout(resolve, milliseconds));
   };
 
-  const addTicket = (ticketID, ownerID, title, description, created, type) => {
+  // Notification Functions
+
+  const showNotificationsModal = () => setShownotifications(true);
+  const closeNotificationModal = () => setShownotifications(false);
+  const removeNotification = (notificationToRemove) => {
+    const updatedNotification = notifications.filter(
+      (notification) => notification.id !== notificationToRemove
+    );
+    setNotifications(updatedNotification);
+  };
+
+  // Modal Create Ticket
+
+  const handleShowCreateModal = () => setShowCreate(true);
+  const handleCloseCreateModal = () => setShowCreate(false);
+
+  // Ticket Functions
+  const addTicket = (
+    ticketID,
+    ownerID,
+    title,
+    description,
+    problem,
+    department,
+    created,
+    type,
+    buttons = {
+      remove: false,
+      reply: true,
+      done: true,
+    }
+  ) => {
     const newTicket = {
       ticketID: ticketID,
       ownerID: ownerID,
       title: title,
       description: description,
+      problem: problem,
+      department: department,
       created: created,
       type: type,
+      buttons: buttons,
     };
     const newTickets = { ...tickets };
     newTickets[type].push(newTicket);
     setTickets(newTickets);
   };
+
+  const removeTicket = (ticketID) => {
+    const newTickets = { ...tickets };
+    newTickets.new.forEach((t) => {
+      if (t.ticketID === ticketID) newTickets.new.pop(t);
+    });
+    newTickets.old.forEach((t) => {
+      if (t.ticketID === ticketID) newTickets.old.pop(t);
+    });
+    newTickets.urgent.forEach((t) => {
+      if (t.ticketID === ticketID) newTickets.urgent.pop(t);
+    });
+    newTickets.closed.forEach((t) => {
+      if (t.ticketID === ticketID) newTickets.closed.pop(t);
+    });
+    setTickets(newTickets);
+  };
+
+  const replyTicket = (ticketID) => {};
+
+  const doneTicket = (ticketID) => {};
 
   const loadAllTickets = async (tk) => {
     if (tk !== "") {
@@ -51,6 +177,8 @@ const Home = () => {
           news[i].ownerID,
           news[i].title,
           news[i].description,
+          news[i].problem,
+          news[i].department,
           news[i].created,
           "new"
         );
@@ -61,6 +189,8 @@ const Home = () => {
           old[i].ownerID,
           old[i].title,
           old[i].description,
+          old[i].problem,
+          old[i].department,
           old[i].created,
           "old"
         );
@@ -71,6 +201,8 @@ const Home = () => {
           urgent[i].ownerID,
           urgent[i].title,
           urgent[i].description,
+          urgent[i].problem,
+          urgent[i].department,
           urgent[i].created,
           "urgent"
         );
@@ -81,12 +213,18 @@ const Home = () => {
           closed[i].ownerID,
           closed[i].title,
           closed[i].description,
+          closed[i].problem,
+          closed[i].department,
           closed[i].created,
           "closed"
         );
       }
     }
   };
+
+  const handleCreateTicket = () => console.log("teste");
+
+  // Check Token
 
   const checkToken = async (storedToken) => {
     let valid = await API.Controllers.Login.checkLogin(storedToken);
@@ -96,12 +234,12 @@ const Home = () => {
     return;
   };
 
+  // Use effect
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     const fetchData = async () => {
       await checkToken(storedToken);
     };
-    setToken(storedToken);
     if (firstTime) {
       firstTime = false;
       fetchData();
@@ -111,6 +249,21 @@ const Home = () => {
 
   return (
     <div className="homeContainer">
+      <button
+        className="notification btn-floating-notifications"
+        onClick={showNotificationsModal}
+      >
+        <span className="material-symbols-outlined">notifications</span>
+        <span className="badge">{notifications.length}</span>
+      </button>
+
+      <NotificationModal
+        show={showNotifications}
+        close={closeNotificationModal}
+        notifications={notifications}
+        removeNotification={removeNotification}
+      />
+
       <div id="div-container" className="container">
         <div className="row">
           {Object.entries(tickets).map(([type, ticketsList]) => (
@@ -129,11 +282,17 @@ const Home = () => {
                   {ticketsList.map((ticket, index) => (
                     <Ticket
                       key={String(ticket.ticketID)}
-                      title={ticket.title}
                       created={ticket.created}
+                      title={ticket.title}
                       description={ticket.description}
+                      problem={ticket.problem}
+                      department={ticket.department}
                       ownerID={ticket.ownerID}
                       ticketID={ticket.ticketID}
+                      done={doneTicket}
+                      remove={removeTicket}
+                      reply={replyTicket}
+                      buttons={ticket.buttons}
                     />
                   ))}
                 </div>
@@ -144,61 +303,16 @@ const Home = () => {
       </div>
       <button
         className="btn btn-primary btn-floating"
-        data-togle="modal"
-        data-target="#novoTicketModal"
+        onClick={handleShowCreateModal}
       >
         <span className="material-symbols-outlined">add</span>
       </button>
-      <div
-        className="modal fade"
-        id="novoTicketModal"
-        tabIndex="-1"
-        role="dialog"
-        aria-labelledby="novoTicketModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="novoTicketModalLabel">
-                Novo Ticket de Suporte
-              </h5>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Fechar"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div className="modal-body">
-              <form id="formNovoTicket">
-                <div className="form-group">
-                  <label htmlFor="titulo">Título:</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="titulo"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="descricao">Descrição:</label>
-                  <textarea
-                    className="form-control"
-                    id="descricao"
-                    rows="3"
-                  ></textarea>
-                </div>
-                <button type="submit" className="btn btn-primary">
-                  Criar Ticket
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
+
+      <CreateTicketModal
+        show={showCreate}
+        create={handleCreateTicket}
+        close={handleCloseCreateModal}
+      />
     </div>
   );
 };

@@ -1,86 +1,103 @@
 import React, { useEffect, useState } from "react";
-import API from "../../api";
+import { Alert, Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import "../../styles/login.css";
+import API from "../../api";
+import "./login.css";
+
+import Logo from "../../assets/images/logo.png";
 
 const LoginForm = () => {
-  const [username, setusername] = useState("");
+  //#region Variables
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("Incorrect username or password.");
+  const Navigate = useNavigate();
 
-  const checkToken = async (storedToken) => {
-    let valid = await API.Controllers.Login.checkLogin(storedToken);
-    if (valid.valid) return navigate("/home");
-    return;
-  };
+  //#endregion
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      checkToken(token);
-    }
-  });
+  //#region Functions
 
-  const sleep = (milliseconds) => {
-    return new Promise((resolve) => setTimeout(resolve, milliseconds));
-  };
+  const handleSubmit = () => {};
+  const handleForgetPassword = () => {};
+  //#endregion
 
-  const handleUsernameChange = (event) => {
-    setusername(event.target.value);
-  };
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    let login = await API.Controllers.Login.tryLogin(username, password);
-    if (login.error) {
-      setError(login.message);
-    } else {
-      localStorage.setItem("token", login.token);
-      await sleep(300);
-      navigate("/home");
-    }
-  };
-
+  //#region Return
   return (
-    <div className="login-container">
-      <form className="form" autoComplete="off" onSubmit={handleSubmit}>
-        <p id="heading">Login</p>
-        <div>{error && <p className="error-message">{error}</p>}</div>
-        <div className="field">
-          <span className="material-symbols-outlined"> alternate_email </span>
-          <input
-            autoComplete="off"
-            placeholder="Username"
-            className="input-field"
+    <div className="sign-in__wrapper">
+      {/* Overlay */}
+      <div className="sign-in__backdrop"></div>
+      {/* Form */}
+      <Form className="shadown p-4 bg-white rounded" onSubmit={handleSubmit}>
+        {/* Header */}
+        <img
+          className="img-thumbnail mx-auto d-block mb-2"
+          src={Logo}
+          alt="logo"
+        />
+        <div className="h4 mb-2 text-center">Entrar</div>
+        {/* Alert */}
+        {show ? (
+          <Alert
+            className="mb-2"
+            variant="danger"
+            onClose={() => setShow(false)}
+            dismissible
+          >
+            {message}
+          </Alert>
+        ) : (
+          <div />
+        )}
+        <Form.Group className="mb-2" controlId="username">
+          <Form.Label>Usuário</Form.Label>
+          <Form.Control
             type="text"
-            onChange={handleUsernameChange}
+            value={username}
+            placeholder="Nome de usuário"
+            onChange={(e) => setUsername(e.target.value)}
+            required
           />
-        </div>
-        <div className="field">
-          <span className="material-symbols-outlined"> lock_open </span>
-          <input
-            placeholder="Password"
-            className="input-field"
-            autoComplete="off"
+        </Form.Group>
+        <Form.Group className="mb-2" controlId="password">
+          <Form.Label>Senha</Form.Label>
+          <Form.Control
             type="password"
-            onChange={handlePasswordChange}
+            value={password}
+            placeholder="Digite sua senha"
+            onChange={(e) => setPassword(e.target.value)}
+            required
           />
+        </Form.Group>
+        <Form.Group className="mb-2" controlId="checkbox">
+          <Form.Check type="checkbox" label="Continuar conectado." />
+        </Form.Group>
+        {!loading ? (
+          <Button className="w-100" variant="primary" type="submit">
+            Entrar
+          </Button>
+        ) : (
+          <Button className="w-100" variant="primary" type="submit" disabled>
+            Carregando ...
+          </Button>
+        )}
+        <div className="d-grid justify-content-end">
+          <Button
+            className="text-muted px-0"
+            variant="link"
+            onClick={handleForgetPassword}
+          >
+            Esqueceu sua senha ?
+          </Button>
         </div>
-        <div className="btn">
-          <button className="button1">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Login&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          </button>
-          <button className="button2">Sign Up</button>
-        </div>
-        <button className="button3">Forgot Password</button>
-      </form>
+      </Form>
+      {/* Footer */}
+      <div className="w-100 mb-2 position-absolute bottom-0 start-50 translate-middle-x text-white text-center">
+        Made by Dias C | &copy;2024
+      </div>
     </div>
   );
+  //#endregion
 };
-
 export default LoginForm;
