@@ -19,7 +19,25 @@ const LoginForm = () => {
 
   //#region Functions
 
-  const handleSubmit = () => {};
+  const sleep = (ms) => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    const login = await API.Controllers.Login.tryLogin(username, password);
+    await sleep(500);
+    if (login.error) {
+      setMessage(login.message);
+      setShow(true);
+      setLoading(false);
+      return;
+    } else {
+      localStorage.setItem("token", login.token);
+      return Navigate("home");
+    }
+  };
+
   const handleForgetPassword = () => {};
   //#endregion
 
@@ -29,7 +47,7 @@ const LoginForm = () => {
       {/* Overlay */}
       <div className="sign-in__backdrop"></div>
       {/* Form */}
-      <Form className="shadown p-4 bg-white rounded" onSubmit={handleSubmit}>
+      <Form className="shadown p-4 bg-white rounded">
         {/* Header */}
         <img
           className="img-thumbnail mx-auto d-block mb-2"
@@ -74,7 +92,12 @@ const LoginForm = () => {
           <Form.Check type="checkbox" label="Continuar conectado." />
         </Form.Group>
         {!loading ? (
-          <Button className="w-100" variant="primary" type="submit">
+          <Button
+            className="w-100"
+            variant="primary"
+            type="button"
+            onClick={handleSubmit}
+          >
             Entrar
           </Button>
         ) : (
