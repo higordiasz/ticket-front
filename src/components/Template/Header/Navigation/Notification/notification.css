@@ -1,0 +1,130 @@
+.notification_content {
+  position: relative;
+  width: 70%;
+  height: 90%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification_badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: red;
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+}
+
+.notification_card {
+  position: absolute;
+  background-color: white;
+  width: 300px;
+  top: 75px;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.notification_card_header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.notification_card_header span {
+  padding: 0;
+  margin: 0;
+  margin-bottom: 5px;
+  color: black;
+  font-weight: bolder;
+}
+
+.notification_card_content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+  width: 100%;
+}
+
+.notification_card_item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  margin-bottom: 5px;
+  width: 100%;
+}
+
+.notification_card_item_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+
+.notification_card_item_icon span {
+  font-size: 30px;
+  color: black;
+}
+
+.notification_card_item_text {
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  flex-direction: column;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.notification_card_item_title {
+  font-size: 14px;
+  color: black;
+  font-weight: 700;
+}
+
+.notification_card_item_description {
+  font-size: 12px;
+  color: rgb(48, 48, 48);
+}
+
+.notification_card_item_time {
+  font-size: 10px;
+  color: rgb(46, 46, 46);
+  font-weight: 700;
+}
+
+.notification_card_footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  width: 100%;
+}
+
+.notification_card_footer span {
+  font-size: 12px;
+  color: black;
+  font-weight: bold;
+}
+
+.notification_card_footer_icon {
+  color: rgb(19, 19, 19);
+  margin-right: 5px;
+  font-size: 15px !important;
+  font-weight: 100 !important;
+  padding: 0;
+}
+
+.notification_no_message {
+  font-size: 14px;
+  color: black;
+  margin: 5px;
+}
