@@ -27,7 +27,7 @@ const Template = ({ content, name, showSearch }) => {
         handleLogout={handleLogout}
       />
       <main className="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <div className="container-fluid py-4">{content}</div>
+        {content}
       </main>
     </>
   );

@@ -1,13 +1,11 @@
 import React from "react";
+import Icon from "../../../../assets/images/icon.svg";
 
 const HeaderLogo = () => {
   return (
     <div className="header-logo">
       <a href="#">
-        <div>
-          <img src="https://assets.codepen.io/285131/untitled-ui-icon.svg" />
-        </div>
-        <img src="https://assets.codepen.io/285131/untitled-ui.svg" />
+        <img src={Icon} alt="text" />
       </a>
     </div>
   );

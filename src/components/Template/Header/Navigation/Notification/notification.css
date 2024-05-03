@@ -18,6 +18,7 @@
 }
 
 .notification_card {
+  z-index: 1001;
   position: absolute;
   background-color: white;
   width: 300px;
