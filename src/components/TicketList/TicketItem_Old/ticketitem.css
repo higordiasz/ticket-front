@@ -1,0 +1,85 @@
+.ticketitem-container {
+  background-color: white;
+  border-radius: 7px;
+  color: black;
+  box-shadow: rgba(50, 50, 105, 0.15) 0px 2px 5px 0px,
+    rgba(0, 0, 0, 0.05) 0px 1px 1px 0px;
+  width: 100%;
+  padding-top: 6px;
+  padding-bottom: 8px;
+  margin-bottom: 14px;
+}
+
+.ticketitem-description,
+.ticketitem-header,
+.ticketitem-info,
+.ticketitem-info,
+.ticketitem-info div,
+.ticketitem-description span,
+.ticketitem-info span,
+.ticketitem-title span {
+  max-width: 100%;
+  margin: 0;
+  padding: 0 0 0 0;
+}
+
+.ticketitem-header {
+  margin-bottom: 5px;
+}
+
+.ticketitem-title span {
+  font-weight: bold;
+  font-size: 19px;
+}
+
+.ticketitem-icon {
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.ticketitem-icon span {
+  font-size: 35px;
+  padding: 5px;
+  font-weight: 100;
+}
+
+.ticketitem-description {
+  margin-bottom: 5px;
+}
+
+.ticketitem-description span {
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.ticketitem-info span {
+  font-weight: 300;
+  font-size: 13px;
+}
+
+.ticketitem-info span .info-title {
+  font-weight: 500;
+}
+
+.ticketitem-icon {
+  display: none;
+}
+
+@media (max-width: 1000px) {
+  .ticketitem-description span {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 600px) {
+  .ticketitem-description span {
+    font-size: 12px;
+  }
+}
+
+@media (min-width: 650px) {
+  .ticketitem-icon {
+    display: flex;
+  }
+}

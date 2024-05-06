@@ -1,7 +1,7 @@
 import React from "react";
 import { Row, Col, Card } from "react-bootstrap";
-//import TicketItem from "./TicketItem/TicketItem";
-import TicketItemTest from "./TicketItemTest/TicketItemTest";
+//import TicketItem from "./TicketItem_Old/TicketItem";
+import TicketItem from "./TicketItem/TicketItem";
 import "./ticketlist.css";
 
 const TicketList = ({ title, tickets, navigate }) => {
@@ -13,9 +13,9 @@ const TicketList = ({ title, tickets, navigate }) => {
         </Card.Title>
       </Card.Header>
       <Card.Body>
-        <div className="ticket-container-test">
+        <div className="ticket-container">
           {tickets.map((ticket) => {
-            return <TicketItemTest ticket={ticket} />;
+            return <TicketItem ticket={ticket} />;
           })}
         </div>
       </Card.Body>

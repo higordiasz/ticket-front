@@ -9,7 +9,7 @@ const HomeCard = ({ icon, title, description, route }) => {
       <Card.Body>
         <Row>
           <Col className="col-3 text-center justify-content-center align-content-center">
-            <div className="btn btn-primary">
+            <div className="btn btn-dark">
               <span className="material-symbols-outlined card-icon">
                 {icon}
               </span>

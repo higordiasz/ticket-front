@@ -18,6 +18,12 @@ const Template = ({ content, name, showSearch }) => {
     return Navigate("/");
   };
 
+  const handleHomeNavigate = () => Navigate("/home");
+
+  const handleTicketNavigate = () => Navigate("/ticket");
+
+  const handleNotificationNavigate = () => Navigate("/notifications");
+
   return (
     <>
       <Header
@@ -25,6 +31,9 @@ const Template = ({ content, name, showSearch }) => {
         showNotifications={showNotifications}
         handleNotifications={handleNotificationShow}
         handleLogout={handleLogout}
+        handleHomeButton={handleHomeNavigate}
+        handleNotificationButton={handleNotificationNavigate}
+        handleTicketButton={handleTicketNavigate}
       />
       <main className="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
         {content}
