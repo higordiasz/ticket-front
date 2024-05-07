@@ -4,27 +4,29 @@
   margin: 0;
 }
 
-.link-info:link {
+.link-secondary:link {
   text-decoration: none;
 }
-.link-info:visited {
+.link-secondary:visited {
   text-decoration: none;
 }
-.link-info:hover {
+.link-secondary:hover {
   text-decoration: none;
+  color: black;
+  font-weight: bold;
 }
-.link-info:active {
+.link-secondary:active {
   text-decoration: none;
 }
 
-.link-info {
+.link-secondary {
   text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.link-info span {
+.link-secondary span {
   margin-left: 4px;
 }
 

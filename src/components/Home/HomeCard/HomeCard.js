@@ -22,7 +22,7 @@ const HomeCard = ({ icon, title, description, route }) => {
         </Row>
       </Card.Body>
       <Card.Footer>
-        <Link className="link-info" to={route}>
+        <Link className="link-secondary" to={route}>
           <span>Veja mais</span>
           <span className="material-symbols-outlined">arrow_forward</span>
         </Link>
